@@ -1,0 +1,108 @@
+*VBA to find a word and highlight in red color and pop a warning messsage asking user to remove that term from the form*
+
+
+Sub TestLookAt()
+Dim MyRange As Range
+Set MyRange = Sheets("Template").UsedRange.Find("Biodegradable", SearchOrder:=xlColumns)
+
+
+If Not MyRange Is Nothing Then
+
+   MyRange.Select
+    MsgBox "Text entered by you contain prohibited term 'biodegradable'. Please click OK, remove the term and resubmit.", , " "
+
+
+    Dim startPos As Integer
+    Dim totalLen As Integer
+    Dim searchText As String
+    Dim endPos As Integer
+    Dim testPos As Integer
+
+ searchText = "biodegradable"
+
+ For Each cl In MyRange
+
+  totalLen = Len(searchText)
+  startPos = InStr(cl, searchText)
+  testPos = 0
+
+  Do While startPos > testPos
+     With cl.Characters(startPos, totalLen).Font
+    .FontStyle = "Bold"
+      .ColorIndex = 3
+      
+    End With
+
+    endPos = startPos + totalLen
+    testPos = testPos + endPos
+     startPos = InStr(testPos, cl, searchText, vbTextCompare)
+  Loop
+
+Next cl
+End If
+End Sub
+
+-
+*VBA just to find and highlight the term in red*
+
+Sub TestLookAtsubs37()
+Dim MyRange As Range
+Set MyRange = Sheets("Template").UsedRange
+
+
+    Dim startPos As Integer
+    Dim totalLen As Integer
+    Dim searchText As String
+    Dim endPos As Integer
+    Dim testPos As Integer
+
+ searchText = "EnvironmentFriendly"
+
+ For Each cl In MyRange
+
+  totalLen = Len(searchText)
+  startPos = InStr(cl, searchText)
+  testPos = 0
+
+  Do While startPos > testPos
+     With cl.Characters(startPos, totalLen).Font
+    .FontStyle = "Bold"
+      .ColorIndex = 3
+    End With
+
+    endPos = startPos + totalLen
+    testPos = testPos + endPos
+     startPos = InStr(testPos, cl, searchText, vbTextCompare)
+  Loop
+
+Next cl
+End Sub
+
+*VBA to toggle between checkboxes* 
+
+Private Sub CheckBox11_Click()
+ If CheckBox11.Value = True Then
+        CheckBox12.Value = False
+     Application.ScreenUpdating = False
+ Rows("79:80").Select
+    Selection.EntireRow.Hidden = False
+    
+    Range("D79").Select
+    
+MsgBox "Please click on the 'Video Upload Link' below to submit a video and video thumbnail.", , " "
+    Application.ScreenUpdating = True
+    End If
+End Sub
+
+Private Sub CheckBox12_Click()
+If CheckBox12.Value = True Then
+        CheckBox11.Value = False
+       Application.ScreenUpdating = False
+Rows("79:80").Select
+    Selection.EntireRow.Hidden = True
+           Range("D81").Select
+           Application.ScreenUpdating = True
+           End If
+End Sub
+
+*end*
