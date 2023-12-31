@@ -1,0 +1,45 @@
+Sub Macro3()
+'
+' Macro3 Macro
+'
+
+Dim ws As Worksheet
+    Dim lastRow As Long
+    Dim i As Long
+    Dim consolidatedSheet As Worksheet
+    Dim consolidatedLastRow As Long
+    
+    ' Add a new sheet named "Consolidated" or refer to an existing one
+    On Error Resume Next
+    Set consolidatedSheet = Sheets("Consolidated")
+    On Error GoTo 0
+    
+    If consolidatedSheet Is Nothing Then
+        Set consolidatedSheet = Sheets.Add(After:=Sheets(Sheets.Count))
+        consolidatedSheet.Name = "Consolidated"
+    End If
+    
+    ' Loop through each sheet in the workbook
+    For Each ws In ThisWorkbook.Sheets
+        ' Skip the "Consolidated" sheet
+        If ws.Name <> "Consolidated" Then
+            ' Copy values and paste as values
+            ws.UsedRange.Copy
+            ws.UsedRange.PasteSpecial xlPasteValues
+            
+            ' Find the last row in column B
+            lastRow = ws.Cells(ws.Rows.Count, 2).End(xlUp).Row
+            
+            ' Loop through rows from bottom to top and delete rows with value 0 in column B
+            For i = lastRow To 1 Step -1
+                If ws.Cells(i, 2).Value = 0 Then
+                    ws.Rows(i).Delete
+                End If
+            Next i
+            
+            ' Copy data to Consolidated sheet
+            consolidatedLastRow = consolidatedSheet.Cells(consolidatedSheet.Rows.Count, 1).End(xlUp).Row
+            ws.UsedRange.Copy consolidatedSheet.Cells(consolidatedLastRow + 1, 1)
+        End If
+    Next ws
+End Sub
